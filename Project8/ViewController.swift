@@ -36,6 +36,7 @@ class ViewController: UIViewController {
         answersLabel.translatesAutoresizingMaskIntoConstraints = false
         answersLabel.font = UIFont.systemFont(ofSize: 24)
         answersLabel.text = "ANSWERS"
+        answersLabel.textAlignment = .right
         answersLabel.numberOfLines = 0
         view.addSubview(answersLabel)
         
@@ -47,6 +48,20 @@ class ViewController: UIViewController {
         currentAnswer.isUserInteractionEnabled = false //tira a interação do usuario e obriga a usar os botões
         view.addSubview(currentAnswer)
         
+        //O submit e o clear não precisam ser adicionados como propriedade da classe pois não serão alterados no futuro, eles vão existir independente do estado do jogo
+        let submit = UIButton(type: .system)
+        submit.translatesAutoresizingMaskIntoConstraints = false
+        submit.setTitle("SUBMIT", for: .normal)
+        view.addSubview(submit)
+        
+        let clear = UIButton(type: .system)
+        clear.translatesAutoresizingMaskIntoConstraints = false
+        clear.setTitle("CLEAR", for: .normal)
+        view.addSubview(clear)
+        
+        let buttonsView = UIView()
+        buttonsView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(buttonsView)
         
         NSLayoutConstraint.activate([
             scoreLabel.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
@@ -54,16 +69,25 @@ class ViewController: UIViewController {
             
             cluesLabel.topAnchor.constraint(equalTo: scoreLabel.bottomAnchor),
             cluesLabel.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor, constant:100),
-            cluesLabel.widthAnchor.constraint(equalTo: view.layoutMarginsGuide.widthAnchor, multiplier: 0.6, constant: -100),
+            cluesLabel.widthAnchor.constraint(equalTo: view.layoutMarginsGuide.widthAnchor, multiplier: 0.6, constant: -100), //ocupa 60% da tela e o constant -100 compensa a distancia do canto esquerdo que tem 100 pontos
             
             answersLabel.topAnchor.constraint(equalTo: scoreLabel.bottomAnchor),
             answersLabel.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor, constant: -100),
-            answersLabel.widthAnchor.constraint(equalTo: view.layoutMarginsGuide.widthAnchor, multiplier: 0.4, constant: -100),
-            answersLabel.heightAnchor.constraint(equalTo: cluesLabel.heightAnchor),
+            answersLabel.widthAnchor.constraint(equalTo: view.layoutMarginsGuide.widthAnchor, multiplier: 0.4, constant: -100), //ocupa os 40% restantes da tela que compensa nos pontos que esta afastado da direita(-100)
+            answersLabel.heightAnchor.constraint(equalTo: cluesLabel.heightAnchor), //mesma altura que o cluesLabel
 
             currentAnswer.centerXAnchor.constraint(equalTo: view.centerXAnchor), //centraliza na tela
             currentAnswer.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5), //ocupa metade da tela(0.5)
             currentAnswer.topAnchor.constraint(equalTo: cluesLabel.bottomAnchor, constant: 20), //20 pontos abaixo do clues label
+            
+            submit.topAnchor.constraint(equalTo: currentAnswer.bottomAnchor),
+            submit.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: -100), //100 pontos do centro para a esquerda para não cobrir o clear
+            submit.heightAnchor.constraint(equalToConstant: 44),
+            
+            clear.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 100), //100 pontos do centro para a direita para não cobrir o submit
+            clear.centerYAnchor.constraint(equalTo: submit.centerYAnchor),
+            clear.heightAnchor.constraint(equalToConstant: 44),
+            
             
         ])
         
