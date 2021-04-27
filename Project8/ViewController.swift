@@ -88,11 +88,16 @@ class ViewController: UIViewController {
             clear.centerYAnchor.constraint(equalTo: submit.centerYAnchor),
             clear.heightAnchor.constraint(equalToConstant: 44),
             
-            
+            buttonsView.widthAnchor.constraint(equalToConstant: 750),
+            buttonsView.heightAnchor.constraint(equalToConstant: 320),
+            buttonsView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            buttonsView.topAnchor.constraint(equalTo: submit.bottomAnchor, constant: 20), //20 pontos abaixo da linha do submit
+            buttonsView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: -20) //encosta na parte de baixo e compensa os 20 pontos do top anchor
         ])
         
         cluesLabel.backgroundColor = .red
         answersLabel.backgroundColor = .blue
+        buttonsView.backgroundColor = .green
     }
     
     override func viewDidLoad() {
