@@ -30,6 +30,7 @@ class ViewController: UIViewController {
         cluesLabel.font = UIFont.systemFont(ofSize: 24) //Determina que a fonte vai ter o tamanho 24 pra qualquer fonte que esteja sendo usado no ios
         cluesLabel.text = "CLUES"
         cluesLabel.numberOfLines = 0
+        cluesLabel.setContentHuggingPriority(UILayoutPriority(1), for: .vertical) //muda a prioridade do ContentHugging, ou seja, ele vai ser esticado primeiro caso a tela precise ocupar o espaço entre o topo e a parte de baixo
         view.addSubview(cluesLabel)
         
         answersLabel = UILabel()
@@ -38,6 +39,7 @@ class ViewController: UIViewController {
         answersLabel.text = "ANSWERS"
         answersLabel.textAlignment = .right
         answersLabel.numberOfLines = 0
+        answersLabel.setContentHuggingPriority(UILayoutPriority(1), for: .vertical)
         view.addSubview(answersLabel)
         
         currentAnswer = UITextField()
@@ -94,6 +96,23 @@ class ViewController: UIViewController {
             buttonsView.topAnchor.constraint(equalTo: submit.bottomAnchor, constant: 20), //20 pontos abaixo da linha do submit
             buttonsView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: -20) //encosta na parte de baixo e compensa os 20 pontos do top anchor
         ])
+        
+        let width = 150
+        let height = 80
+        
+        for row in 0..<4{
+            for column in 0..<5{
+                let letterButton = UIButton(type: .system)
+                letterButton.titleLabel?.font = UIFont.systemFont(ofSize: 36)
+                letterButton.setTitle("WWW", for: .normal)
+                
+                let frame = CGRect(x: column * width, y: row * height, width: width, height: height)
+                letterButton.frame = frame
+                
+                buttonsView.addSubview(letterButton)
+                letterButtons.append(letterButton)
+            }
+        }
         
         cluesLabel.backgroundColor = .red
         answersLabel.backgroundColor = .blue
