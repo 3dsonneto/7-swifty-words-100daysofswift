@@ -122,10 +122,7 @@ class ViewController: UIViewController {
                 letterButtons.append(letterButton)
             }
         }
-        
-        cluesLabel.backgroundColor = .red
-        answersLabel.backgroundColor = .blue
-        buttonsView.backgroundColor = .green
+
     }
     
     override func viewDidLoad() {
@@ -135,15 +132,54 @@ class ViewController: UIViewController {
     }
 
     @objc func letterTapped(_ sender: UIButton){
-        
+        guard let buttonTitle = sender.titleLabel?.text else {return}
+        currentAnswer.text = currentAnswer.text?.appending(buttonTitle)
+        activatedButtons.append(sender)
+        sender.isHidden = true
     }
     
     @objc func submitTapped(_ sender: UIButton){
+        guard let answerText = currentAnswer.text else{ return }
+        
+        if let solutionPosition = solutions.firstIndex(of: answerText){
+            activatedButtons.removeAll()
+            
+            var splitAnswers = answersLabel.text?.components(separatedBy: "\n")
+            splitAnswers?[solutionPosition] = answerText
+            answersLabel.text = splitAnswers?.joined(separator: "\n")
+            
+            currentAnswer.text = ""
+            score += 1
+            
+            if score % 7 == 0{
+                let ac = UIAlertController(title: "Well done!", message: "Are you ready for the next level?", preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "Let's go!", style: .default, handler: levelUp))
+                present(ac, animated: true)
+            }
+        }
         
     }
     
-    @objc func clearTapped(_ sender: UIButton){
+    func levelUp(action: UIAlertAction){
+        level += 1
         
+        solutions.removeAll(keepingCapacity: true)
+        
+        loadLevel()
+        
+        for button in letterButtons{
+            button.isHidden = false
+        }
+    }
+    
+    @objc func clearTapped(_ sender: UIButton){
+        currentAnswer.text = ""
+        
+        for button in activatedButtons{
+            button.isHidden = false
+        }
+        
+        activatedButtons.removeAll()
     }
     
     func loadLevel(){
@@ -151,20 +187,20 @@ class ViewController: UIViewController {
         var solutionsString = ""
         var letterBits = [String]()
         
-        if let levelFileURL = Bundle.main.url(forResource: "level\(level)", withExtension: "txt"){
-            if let levelContents = try? String(contentsOf: levelFileURL){
-                var lines = levelContents.components(separatedBy: "\n")
-                lines.shuffle()
+        if let levelFileURL = Bundle.main.url(forResource: "level\(level)", withExtension: "txt"){ //pega o arquivo do level
+            if let levelContents = try? String(contentsOf: levelFileURL){ // pega o conteudo do arquivo
+                var lines = levelContents.components(separatedBy: "\n") //atribui a lines cada linha(por isso o \n)
+                lines.shuffle() //reordena aleatoriamente as linhas
                 
                 for (index, line) in lines.enumerated(){
-                    let parts = line.components(separatedBy: ": ")
-                    let answer = parts[0]
-                    let clue = parts[1]
+                    let parts = line.components(separatedBy: ": ") //separa a linha em duas partes separadas pelo : LETRAS: DICA
+                    let answer = parts[0] //resposta é a primeira parte da linha(antes do :)
+                    let clue = parts[1] //dica é a segunda parte da linha(depois do :)
                     
-                    clueString += "\(index + 1). \(clue)\n"
+                    clueString += "\(index + 1). \(clue)\n" //atribui ao clue stringo  index do tuple + 1 (pra começar do 1) e mostrar antes da linha do clue o numero equivalente
                     
-                    let solutionWord = answer.replacingOccurrences(of: "|", with: "")
-                    solutionsString += "\(solutionWord.count) letters\n"
+                    let solutionWord = answer.replacingOccurrences(of: "|", with: "") //tira os | para atribuir a palavra certa
+                    solutionsString += "\(solutionWord.count) letters\n" //mostra quantas letras da palavra baseado no count
                     solutions.append(solutionWord)
                     
                     let bits = answer.components(separatedBy: "|")
